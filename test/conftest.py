@@ -40,19 +40,26 @@ def client(session):
     app.dependency_overrides[get_db] = override_get_db
     yield TestClient(app)
 
+def add_model_to_db(session, Model, data):
+    def create_model(Model, auther):
+        return Model(**auther)
+    
+    model_map = map(create_model, data)
+    model_list = list(model_map)
+    session.add_all(model_list)
+    session.commit()
+    model_list = session.query(models.Auther).all()
+    return model_list
+
 @pytest.fixture
 def test_authers(session):
     data = [{ "name": "name 1"},{"name": "name 2"},{"name": "name 3"}]
-    
-    def create_auther_model(auther):
-        return models.Auther(**auther)
-    
-    authers_map = map(create_auther_model, data)
-    authers = list(authers_map)
-    session.add_all(authers)
-    session.commit()
-    authers = session.query(models.Auther).all()
-    return authers
+    return add_model_to_db(session, models.Auther, data)
+
+@pytest.fixture
+def test_publisher(session):
+    data = [{ "name": "name 1"},{"name": "name 2"},{"name": "name 3"}]
+    return add_model_to_db(session, models.Publisher, data)
 
 @pytest.fixture
 def test_users(session):
@@ -69,15 +76,7 @@ def test_users(session):
     }
     ]
 
-    def create_user_model(user):
-        return models.Users(**user)
-
-    users_map = map(create_user_model, data)
-    users = list(users_map)
-    session.add_all(users)
-    session.commit()
-    users = session.query(models.Users).all()
-    return users
+    return add_model_to_db(session, models.Users, data)
     
 
 @pytest.fixture
@@ -100,12 +99,4 @@ def test_books(session):
     }
     ]
 
-    def create_book_model(book):
-        return models.Books(**book)
-
-    book_map = map(create_book_model, books_data)
-    books = list(book_map)
-    session.add_all(books)
-    session.commit()
-    books = session.query(models.Books).all()
-    return books
+    return add_model_to_db(session, models.Books, data)
