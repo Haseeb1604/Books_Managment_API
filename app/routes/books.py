@@ -10,14 +10,19 @@ router = APIRouter(
     tags=["books"]
 )
 
+# HTTP_201_CREATED
+# HTTP_204_NO_CONTENT (After Deletion)
+# HTTP_403_FORBIDDEN (Un Autherized)
+# HTTP_404_NOT_FOUND
+
 @router.get("/", response_model=List[schemas.BookOut])
 def get_books(db: Session = Depends(get_db)):
     posts = db.query(models.Books).all()
     return posts
 
-@router.get("/{id}", response_model=schemas.BookOut)
-def get_book(id: int, db: Session = Depends(get_db)):
-    book = db.query(models.Books).filter(models.Books.id == id).all()
+@router.get("/{id}",  response_model=schemas.BookOut)
+def get_single_book(id: int, response: Response, db: Session = Depends(get_db)):
+    book = db.query(models.Books).filter(models.Books.id == id).first()
     if not book:
         raise HTTPException(
             status_code = status.HTTP_404_NOT_FOUND,
@@ -34,3 +39,36 @@ def create_item( book: schemas.Book, db: Session = Depends(get_db)):
     db.refresh(new_book)
 
     return new_book
+
+@router.delete("/{id}")
+def delete_book( id: int, db: Session = Depends(get_db)):
+    book = db.query(models.Books).filter(models.Books.id == id)
+
+    if book.first() is None:
+        raise Exception(
+            status_code = status.HTTP_404_NOT_FOUND,
+            detail = f"Book with ID {id} not found"
+        )
+    
+    book.delete(synchronize_session=False)
+    db.commit()
+
+    return Response(status_code=status.HTTP_204_NO_CONTENT)
+
+@router.put("/{id}", response_model=schemas.BookOut)
+def update_book(
+    id: int, book: schemas.Book,
+    db: Session = Depends(get_db)):
+    
+    book_query = db.query(models.Books).filter(models.Books.id == id)
+
+    if book_query.first() is None:
+        raise Exception(
+            status_code = status.HTTP_404_NOT_FOUND,
+            detail = f"Book with ID {id} not found"
+        )
+
+    book_query.update(book.dict(), synchronize_session=False)
+    db.commit()
+
+    return book_query.first()

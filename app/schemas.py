@@ -25,5 +25,6 @@ class Book(_BookBase):
     pass
  
 class BookOut(_BookBase):
+    id: int
     created_At: datetime
 
