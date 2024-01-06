@@ -27,3 +27,16 @@ class BookOut(_BookBase):
     id: int
     created_At: datetime
 
+class _Publisher(BaseModel):
+    name: str
+
+class Publisher(_Publisher):
+    id: int
+    created_At: datetime
+
+class _Auther(BaseModel):
+    name: str
+
+class Auther(_Auther):
+    id: int
+    created_At: datetime
