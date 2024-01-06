@@ -45,7 +45,7 @@ def delete_book( id: int, db: Session = Depends(get_db)):
     book = db.query(models.Books).filter(models.Books.id == id)
 
     if book.first() is None:
-        raise Exception(
+        raise HTTPException(
             status_code = status.HTTP_404_NOT_FOUND,
             detail = f"Book with ID {id} not found"
         )
@@ -63,7 +63,7 @@ def update_book(
     book_query = db.query(models.Books).filter(models.Books.id == id)
 
     if book_query.first() is None:
-        raise Exception(
+        raise HTTPException(
             status_code = status.HTTP_404_NOT_FOUND,
             detail = f"Book with ID {id} not found"
         )

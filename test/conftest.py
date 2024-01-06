@@ -39,3 +39,33 @@ def client(session):
             session.close()
     app.dependency_overrides[get_db] = override_get_db
     yield TestClient(app)
+
+@pytest.fixture
+def test_books(session):
+    books_data = [{
+        "title": "first title",
+        "price": 12,
+        "auther": "auther 1",
+        "publisher": "publisher2 ",
+    },{
+        "title": "Second title",
+        "price": 34,
+        "auther": "auther 1",
+        "publisher": "publisher 1",
+    },{
+        "title": "third title",
+        "price": 23,
+        "auther": "auther 2",
+        "publisher": "publisher 1",
+    }
+    ]
+
+    def create_book_model(book):
+        return models.Books(**book)
+
+    book_map = map(create_book_model, books_data)
+    books = list(book_map)
+    session.add_all(books)
+    session.commit()
+    books = session.query(models.Books).all()
+    return books
