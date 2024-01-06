@@ -41,6 +41,20 @@ def client(session):
     yield TestClient(app)
 
 @pytest.fixture
+def test_authers(session):
+    data = [{ "name": "name 1"},{"name": "name 2"},{"name": "name 3"}]
+    
+    def create_auther_model(auther):
+        return models.Auther(**auther)
+    
+    authers_map = map(create_auther_model, data)
+    authers = list(authers_map)
+    session.add_all(authers)
+    session.commit()
+    authers = session.query(models.Auther).all()
+    return authers
+
+@pytest.fixture
 def test_users(session):
     data = [{
         "name": "abc",
