@@ -10,7 +10,6 @@ from app.config import settings
 from app.Database import get_db
 from app.Database import Base
 from app import models
-from app.routers.oauth2 import create_access_token
 
 SQLALCHEMY_DATABASE_URL = f"postgresql://{settings.DATABASE_USERNAME}:{settings.DATABASE_PASSWORD}@{settings.DATABASE_HOSTNAME}:{settings.DATABASE_PORT}/{settings.DATABASE_NAME}_test"
 
