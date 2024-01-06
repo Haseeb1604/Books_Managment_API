@@ -10,7 +10,7 @@ class Users(Base):
     name = Column(String, nullable=False)
     email = Column(String, nullable=False, unique=True)
     password = Column(String, nullable=False)
-    usertype = Column(String, nullable=False, server_default=text("normal"))
+    usertype = Column(String, nullable=False)
     created_At = Column(
         TIMESTAMP(timezone=True), nullable=False, 
         server_default=text('now()')
