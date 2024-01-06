@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from .routes import books
+from .routes import books, users
 
 app = FastAPI()
 
@@ -15,6 +15,7 @@ app.add_middleware(
 )
 
 app.include_router(books.router)
+app.include_router(users.router)
 
 @app.get("/")
 def read_items():

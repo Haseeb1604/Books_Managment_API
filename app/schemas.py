@@ -2,17 +2,16 @@ from pydantic import BaseModel, EmailStr
 from typing import Optional
 from datetime import datetime
 
-class UserCreate(BaseModel):
-    email: EmailStr
+class _UserBase(BaseModel):
     name: str
-    password: str
+    email: EmailStr
     usertype: Optional[str] = "normal"
 
-class UserOut(BaseModel):
+class UserCreate(_UserBase):
+    password: str
+    
+class UserOut(_UserBase):
     id: int
-    name: str
-    email: EmailStr
-    usertype: str
     created_At: datetime
 
 class _BookBase(BaseModel):
