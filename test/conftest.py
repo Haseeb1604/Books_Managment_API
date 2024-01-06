@@ -41,6 +41,32 @@ def client(session):
     yield TestClient(app)
 
 @pytest.fixture
+def test_users(session):
+    data = [{
+        "name": "abc",
+        "email": "abc@example.com",
+        "password": "abc123",
+        "usertype": "admin",
+    },{
+        "name": "abc123",
+        "email": "abc123@example.com",
+        "password": "1234",
+        "usertype": "normal",
+    }
+    ]
+
+    def create_user_model(user):
+        return models.Users(**user)
+
+    users_map = map(create_user_model, data)
+    users = list(users_map)
+    session.add_all(users)
+    session.commit()
+    users = session.query(models.Users).all()
+    return users
+    
+
+@pytest.fixture
 def test_books(session):
     books_data = [{
         "title": "first title",

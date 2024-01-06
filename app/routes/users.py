@@ -9,9 +9,21 @@ router = APIRouter(
     tags=["Users"]
 )
 
+# HTTP_201_CREATED
+# HTTP_204_NO_CONTENT (After Deletion)
+# HTTP_403_FORBIDDEN (Un Autherized)
+# HTTP_404_NOT_FOUND
+# HTTP_409_CONFLICT (Already Exists)
+
 @router.post("/", response_model=schemas.UserOut)
 def create_item(user: schemas.UserCreate, db: Session = Depends(get_db)):
     new_user = models.Users(**user.dict())
+    user = db.query(models.Users).filter(models.Users.email == new_user.email).first()
+    if user:
+        raise HTTPException(
+            status_code = status.HTTP_409_CONFLICT,
+            detail = f"User with {user.email} email address already exists"
+        )
     db.add(new_user)
     db.commit()
     db.refresh(new_user)

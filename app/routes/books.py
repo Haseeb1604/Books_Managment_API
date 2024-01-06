@@ -14,6 +14,7 @@ router = APIRouter(
 # HTTP_204_NO_CONTENT (After Deletion)
 # HTTP_403_FORBIDDEN (Un Autherized)
 # HTTP_404_NOT_FOUND
+# HTTP_409_CONFLICT (Already Exists)
 
 @router.get("/", response_model=List[schemas.BookOut])
 def get_books(db: Session = Depends(get_db)):
