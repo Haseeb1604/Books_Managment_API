@@ -20,7 +20,7 @@ def test_create_users(client, name, email, password, usertype):
         "password": password
     }
     res = client.post('/users/', json = data)
-    assert res.status_code == 200
+    assert res.status_code == 201
 
 def test_create_users_with_usertype_default(client):
     data = {
@@ -29,7 +29,7 @@ def test_create_users_with_usertype_default(client):
         "password": "abc123"
     }
     res = client.post("/users/", json=data)
-    assert res.status_code == 200
+    assert res.status_code == 201
 
 def test_create_users_with_email_exist(client, test_users):
     data = {
@@ -39,3 +39,17 @@ def test_create_users_with_email_exist(client, test_users):
     }
     res = client.post("/users/", json=data)
     assert res.status_code == 409
+
+def test_delete_users(client, test_users):
+    res = client.delete(f"/users/{test_users[0].id}")
+    assert res.status_code == 204
+
+def test_update_users(client, test_users):
+    data = {
+        "name": "abc1234",
+        "email": "abc1234@example.com",
+        "password": "abc123",
+        "userType": "admin"
+    }
+    res = client.put(f"/users/{test_users[0].id}", json=data)
+    assert res.status_code == 201
