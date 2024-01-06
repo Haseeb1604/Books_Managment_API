@@ -18,8 +18,8 @@ router = APIRouter(
 @router.post("/", status_code=status.HTTP_201_CREATED, response_model=schemas.Auther)
 def create_auther(auther: schemas._Auther, db: Session = Depends(get_db)):
     new_auther = models.Auther(**auther.dict())
-    auther = db.query(models.Auther).filter(models.Auther.name == new_auther.name).first()
-    if auther:
+    auther_query = db.query(models.Auther).filter(models.Auther.name == new_auther.name).first()
+    if auther_query:
         raise HTTPException(
             status_code = status.HTTP_409_CONFLICT,
             detail = f"Auther with {auther.name} name already exists"
@@ -40,6 +40,6 @@ def read_auther(id:int, db: Session = Depends(get_db)):
     if auther is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"Auther with ID {auther.id} does not exist"
+            detail=f"Auther with ID {id} does not exist"
         )
     return auther

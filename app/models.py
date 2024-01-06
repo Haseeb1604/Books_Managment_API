@@ -11,8 +11,7 @@ class Users(Base):
     email = Column(String, nullable=False, unique=True)
     password = Column(String, nullable=False)
     usertype = Column(
-        String, CheckConstraint('usertype in ("admin", "normal")'), 
-        nullable=False, server_default='normal')
+        String, nullable=False, server_default='normal')
     created_At = Column(
         TIMESTAMP(timezone=True), nullable=False, 
         server_default=text('now()')
@@ -22,6 +21,8 @@ class Books(Base):
     __tablename__ = "books"
     id = Column(Integer, primary_key=True, nullable=False)
     title = Column(String, nullable=False)
+    auther = Column(String, nullable=False)
+    publisher = Column(String, nullable=False)
     price = Column(Integer, nullable=False)
     created_At = Column(
         TIMESTAMP(timezone=True), nullable=False, 

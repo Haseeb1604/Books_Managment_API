@@ -8,7 +8,7 @@ def test_create_auther(client, name):
     assert res.status_code == 201
 
 @pytest.mark.parametrize("name", ["name 1", "name 2", "name 3"])
-def test_create_duplicate_auther(client, test_authers):
+def test_create_duplicate_auther(client, test_authers, name):
     res = client.post("/auther/", json={
         "name": name
     })

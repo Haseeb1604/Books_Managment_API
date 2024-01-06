@@ -41,15 +41,15 @@ def client(session):
     yield TestClient(app)
 
 def add_model_to_db(session, Model, data):
-    def create_model(Model, auther):
+    def create_model(auther):
         return Model(**auther)
     
-    model_map = map(create_model, data)
-    model_list = list(model_map)
-    session.add_all(model_list)
+    data_map = map(create_model, data)
+    data_list = list(data_map)
+    session.add_all(data_list)
     session.commit()
-    model_list = session.query(models.Auther).all()
-    return model_list
+    data_list = session.query(Model).all()
+    return data_list
 
 @pytest.fixture
 def test_authers(session):
@@ -81,7 +81,7 @@ def test_users(session):
 
 @pytest.fixture
 def test_books(session):
-    books_data = [{
+    data = [{
         "title": "first title",
         "price": 12,
         "auther": "auther 1",

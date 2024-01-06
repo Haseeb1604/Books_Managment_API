@@ -40,6 +40,6 @@ def read_publisher(id:int, db: Session = Depends(get_db)):
     if publisher is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"Publisher with ID {publisher.id} does not exist"
+            detail=f"Publisher with ID {id} does not exist"
         )
     return publisher
