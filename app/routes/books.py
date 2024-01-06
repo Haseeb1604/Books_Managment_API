@@ -5,7 +5,6 @@ from app import models, schemas
 
 from ..Database import get_db
 
-
 router = APIRouter(
     prefix="/books",
     tags=["books"]
@@ -22,7 +21,7 @@ def get_book(id: int, db: Session = Depends(get_db)):
     if not book:
         raise HTTPException(
             status_code = status.HTTP_404_NOT_FOUND,
-            details = f"Book with ID {id} not found"
+            detail = f"Book with ID {id} not found"
         )
     return book
 
@@ -32,6 +31,6 @@ def create_item( book: schemas.Book, db: Session = Depends(get_db)):
     
     db.add(new_book)
     db.commit()
-    db.refresh()
+    db.refresh(new_book)
 
     return new_book

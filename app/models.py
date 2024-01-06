@@ -21,7 +21,7 @@ class Books(Base):
     id = Column(Integer, primary_key=True, nullable=False)
     title = Column(String, nullable=False)
     price = Column(Integer, nullable=False)
-    author = Column(String, nullable=False)
+    auther = Column(String, nullable=False)
     publisher = Column(String, nullable=False)
     created_At = Column(
         TIMESTAMP(timezone=True), nullable=False, 

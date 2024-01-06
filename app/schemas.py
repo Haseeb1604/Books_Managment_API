@@ -20,11 +20,10 @@ class _BookBase(BaseModel):
     price: int
     auther: str
     publisher: str
-    created_At: datetime
 
 class Book(_BookBase):
-    id: int
+    pass
  
 class BookOut(_BookBase):
-    pass
+    created_At: datetime
 
