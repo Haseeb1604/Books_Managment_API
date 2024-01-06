@@ -11,7 +11,27 @@ router = APIRouter(
     tags=["books"]
 )
 
-@router.get("/", response_model=List[schemas.Book])
-def get_posts(db: Session = Depends(get_db)):
+@router.get("/", response_model=List[schemas.BookOut])
+def get_books(db: Session = Depends(get_db)):
     posts = db.query(models.Books).all()
     return posts
+
+@router.get("/{id}", response_model=schemas.BookOut)
+def get_book(id: int, db: Session = Depends(get_db)):
+    book = db.query(models.Books).filter(models.Books.id == id).all()
+    if not book:
+        raise HTTPException(
+            status_code = status.HTTP_404_NOT_FOUND,
+            details = f"Book with ID {id} not found"
+        )
+    return book
+
+@router.post("/", response_model=schemas.BookOut, status_code=status.HTTP_201_CREATED)
+def create_item( book: schemas.Book, db: Session = Depends(get_db)):
+    new_book = models.Books(**book.dict())
+    
+    db.add(new_book)
+    db.commit()
+    db.refresh()
+
+    return new_book

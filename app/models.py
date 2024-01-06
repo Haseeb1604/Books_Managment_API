@@ -7,8 +7,8 @@ from .Database import Base
 class Users(Base):
     __tablename__ = "users"
     id = Column(Integer, primary_key=True, nullable=False)
-    name = Column(string, nullable=False)
-    email = Column(string, nullable=False, unique=True)
+    name = Column(String, nullable=False)
+    email = Column(String, nullable=False, unique=True)
     password = Column(String, nullable=False)
     usertype = Column(String, nullable=False, server_default=text("normal"))
     created_At = Column(

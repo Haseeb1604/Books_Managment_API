@@ -1,14 +1,6 @@
 from pydantic import BaseModel, EmailStr
 from typing import Optional
 from datetime import datetime
-from pydantic.types import conint
-
-# Users
-# - id
-# - name
-# - email
-# - password
-# - usertype
 
 class UserCreate(BaseModel):
     email: EmailStr
@@ -28,8 +20,11 @@ class _BookBase(BaseModel):
     price: int
     auther: str
     publisher: str
+    created_At: datetime
 
 class Book(_BookBase):
-    pass
+    id: int
  
+class BookOut(_BookBase):
+    pass
 
