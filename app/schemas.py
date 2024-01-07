@@ -14,6 +14,10 @@ class UserOut(_UserBase):
     id: int
     created_At: datetime
 
+class UserLogin(BaseModel):
+    email: str
+    password: str
+
 class _Publisher(BaseModel):
     name: str
 
