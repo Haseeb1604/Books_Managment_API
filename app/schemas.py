@@ -21,6 +21,9 @@ class Token(BaseModel):
 class TokenData(BaseModel):
     id: Optional[str] = None
 
+class CurrentUser(TokenData):
+    usertype: Optional[str] = "normal"
+
 class _Publisher(BaseModel):
     name: str
 
