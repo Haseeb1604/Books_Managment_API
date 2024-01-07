@@ -6,7 +6,7 @@ from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.orm import Session
 
 from app.config import settings
-from app import Database, models
+from app import Database, models, schemas
 
 oauth2_Schema = OAuth2PasswordBearer(tokenUrl="login")
 
@@ -19,10 +19,8 @@ def create_access_token(data: dict):
 
     expire = datetime.utcnow() + timedelta(minutes=settings.ACCESS_TOKEN_EXPIRES_MINUTES)
     to_encode.update({'exp': expire})
-    print("Encoded data")
-    print(to_encode)
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
-
+ 
     return encoded_jwt
 
 def verify_access_token(token: str, credentails_exception):
@@ -32,7 +30,7 @@ def verify_access_token(token: str, credentails_exception):
         if id is None:
             raise credentails_exception
 
-        token_data = schema.TokenData()
+        token_data = schemas.TokenData()
         token_data.id = id
     except JWTError:
         raise credentails_exception    
@@ -45,5 +43,5 @@ def get_current_user(token: str = Depends(oauth2_Schema), db: Session = Depends(
         headers={"WWW-Authenticate": "Bearer"}
         )
     token_id = verify_access_token(token, credentails_exception)
-    user = db.query(models.User).filter(models.User.id == token_id.id).first()
+    user = db.query(models.Users).filter(models.Users.id == token_id.id).first()
     return user

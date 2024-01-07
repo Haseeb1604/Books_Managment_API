@@ -3,6 +3,7 @@ from sqlalchemy.orm import Session
 from typing import List
 from app import models, schemas
 from ..Database import get_db
+from . import oauth2
 
 # HTTP_201_CREATED
 # HTTP_204_NO_CONTENT (After Deletion)
@@ -16,7 +17,11 @@ router = APIRouter(
 )
 
 @router.post("/", status_code=status.HTTP_201_CREATED, response_model=schemas.Auther)
-def create_auther(auther: schemas._Auther, db: Session = Depends(get_db)):
+def create_auther(
+    auther: schemas._Auther,
+    db: Session = Depends(get_db),
+    current_user: int = Depends(oauth2.get_current_user)
+    ):
     new_auther = models.Auther(**auther.dict())
     auther_query = db.query(models.Auther).filter(models.Auther.name == new_auther.name).first()
     if auther_query:
