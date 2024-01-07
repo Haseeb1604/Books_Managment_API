@@ -5,7 +5,7 @@ from app.main import app
 from sqlalchemy import create_engine
 from sqlalchemy.orm import declarative_base
 from sqlalchemy.orm import sessionmaker
-
+ 
 from app.config import settings
 from app.Database import get_db
 from app.Database import Base
