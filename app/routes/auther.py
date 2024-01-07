@@ -71,7 +71,7 @@ def delete_auther(
 
     return Response(status_code=status.HTTP_204_NO_CONTENT)
 
-@router.put('/{id}', status_code=status.HTTP_201_CREATED ,response_model=schemas.UserOut)
+@router.put('/{id}', status_code=status.HTTP_201_CREATED ,response_model=schemas.Auther)
 def update_auther(
     id: int, auther: schemas._Auther,
     db: Session = Depends(get_db),
