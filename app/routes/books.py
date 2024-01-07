@@ -3,7 +3,9 @@ from sqlalchemy.orm import Session
 from typing import Any, List, Optional
 from app import models, schemas
 
-from ..Database import get_db
+from . import oauth2
+
+from app.Database import get_db
 
 router = APIRouter(
     prefix="/books",
@@ -35,10 +37,14 @@ def get_single_book(
         )
     return book
 
-@router.post("/{id}", response_model=schemas.BookOut, status_code=status.HTTP_201_CREATED)
-def create_item( id: int, book: schemas.Book, db: Session = Depends(get_db)):
+@router.post("/", response_model=schemas.BookOut, status_code=status.HTTP_201_CREATED)
+def create_item(
+    book: schemas.Book, 
+    db: Session = Depends(get_db),
+    current_user: int = Depends(oauth2.get_current_user)
+    ):
     new_book = models.Books(
-        owner_id = id,
+        owner_id = current_user,
         **book.dict()
         )
     
@@ -48,11 +54,13 @@ def create_item( id: int, book: schemas.Book, db: Session = Depends(get_db)):
 
     return new_book
 
-@router.delete("/{user_id}/{id}")
+@router.delete("/{id}")
 def delete_book( 
-    user_id: int, id: int, 
-    db: Session = Depends(get_db)
+    id: int, 
+    db: Session = Depends(get_db),
+    current_user: int = Depends(oauth2.get_current_user)
     ):
+
     book = db.query(models.Books).filter(models.Books.id == id)
 
     if book.first() is None:
@@ -61,7 +69,7 @@ def delete_book(
             detail = f"Book with ID {id} not found"
         )
 
-    user = db.query(models.Users).filter(models.Users.id == user_id).first()
+    user = db.query(models.Users).filter(models.Users.id == current_user).first()
 
     if (book.first().owner_id != user.id) and (user.usertype == "normal"):
         raise HTTPException(
@@ -74,10 +82,11 @@ def delete_book(
 
     return Response(status_code=status.HTTP_204_NO_CONTENT)
 
-@router.put("/{user_id}/{id}", response_model=schemas.BookOut)
+@router.put("/{id}", response_model=schemas.BookOut)
 def update_book(
-    user_id: int, id: int, book: schemas.Book,
-    db: Session = Depends(get_db)
+    id: int, book: schemas.Book,
+    db: Session = Depends(get_db),
+    current_user: int = Depends(oauth2.get_current_user)
     ):
     
     book_query = db.query(models.Books).filter(models.Books.id == id)
@@ -88,7 +97,7 @@ def update_book(
             detail = f"Book with ID {id} not found"
         )
 
-    if (book_query.first().owner_id != user_id):
+    if (book_query.first().owner_id != current_user):
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail= f"Not autherized to perfrom requested operation"
