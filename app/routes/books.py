@@ -58,7 +58,7 @@ def create_item(
 def delete_book( 
     id: int, 
     db: Session = Depends(get_db),
-    current_user: int = Depends(oauth2.get_current_user)
+    current_user: schemas.CurrentUser = Depends(oauth2.get_current_user)
     ):
 
     book = db.query(models.Books).filter(models.Books.id == id)
@@ -69,9 +69,7 @@ def delete_book(
             detail = f"Book with ID {id} not found"
         )
 
-    user = db.query(models.Users).filter(models.Users.id == current_user).first()
-
-    if (book.first().owner_id != user.id) and (user.usertype == "normal"):
+    if (book.first().owner_id != current_user.id) and (current_user.usertype == "normal"):
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail= f"Not autherized to perfrom requested operation"
