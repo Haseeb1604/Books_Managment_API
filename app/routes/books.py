@@ -88,7 +88,7 @@ def update_book(
             detail = f"Book with ID {id} not found"
         )
 
-    if (book.first().owner_id != user_id):
+    if (book_query.first().owner_id != user_id):
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail= f"Not autherized to perfrom requested operation"
