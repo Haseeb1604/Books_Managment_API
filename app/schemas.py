@@ -33,9 +33,9 @@ class _BookBase(BaseModel):
     price: int
 
 class Book(_BookBase):
+    owner_id: int
     auther_id: int
     publisher_id: int
-    pass
  
 class BookOut(_BookBase):
     id: int

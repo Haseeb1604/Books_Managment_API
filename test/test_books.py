@@ -1,14 +1,14 @@
 import pytest
 
-def test_get_all_posts(client, test_books):
+def test_get_all_books(client, test_books):
     res = client.get("/books/")
     assert res.status_code == 200
 
-def test_get_one_post(client, test_books):
+def test_get_one_book(client, test_books):
     res = client.get(f"/books/{test_books[0].id}")
     assert res.status_code == 200
 
-def test_get_undefined_post(client):
+def test_get_undefined_book(client):
     res = client.get(f"/books/999999")
     assert res.status_code == 404
 
@@ -48,7 +48,7 @@ def test_delete_book_not_defined(client, test_books):
     res = client.delete(f"/books/99999")
     assert res.status_code == 404
 
-def test_update_post(client, test_books):
+def test_update_book(client, test_books):
     data = {
         "title": "title",
         "price": 30,
@@ -58,7 +58,7 @@ def test_update_post(client, test_books):
     res = client.put(f"/books/{test_books[0].id}", json = data)
     assert res.status_code == 200
 
-def test_update_post_not_exist(client, test_books):
+def test_update_book_not_exist(client, test_books):
     data = {
         "title": "title",
         "price": 30,
@@ -68,7 +68,7 @@ def test_update_post_not_exist(client, test_books):
     res = client.put(f"/books/99999", json = data)
     assert res.status_code == 404
 
-def test_update_post_other_type(client, test_books):
+def test_update_book_other_type(client, test_books):
     data = {
         "title": "title",
         "price": "abc",

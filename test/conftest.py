@@ -73,6 +73,11 @@ def test_users(session):
         "email": "abc123@example.com",
         "password": "1234",
         "usertype": "normal",
+    },{
+        "name": "user",
+        "email": "user123@example.com",
+        "password": "1234",
+        "usertype": "normal",
     }
     ]
 
@@ -80,22 +85,25 @@ def test_users(session):
     
 
 @pytest.fixture
-def test_books(session):
+def test_books(session, test_users):
     data = [{
         "title": "first title",
         "price": 12,
-        "auther": "auther 1",
-        "publisher": "publisher2 ",
+        "auther_id": 1,
+        "publisher_id": 2,
+        "owner_id": test_users[0].id
     },{
         "title": "Second title",
         "price": 34,
-        "auther": "auther 1",
-        "publisher": "publisher 1",
+        "auther_id": 1,
+        "publisher_id": 1,
+        "owner_id": test_users[2].id
     },{
         "title": "third title",
         "price": 23,
-        "auther": "auther 2",
-        "publisher": "publisher 1",
+        "auther_id": 2,
+        "publisher_id": 2,
+        "owner_id": test_users[1].id
     }
     ]
 
