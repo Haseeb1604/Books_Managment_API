@@ -64,7 +64,7 @@ def read_user(
             )
     return user
 
-@router.delete("/{id}", response_model=schemas.UserOut)
+@router.delete("/{id}")
 def delete_user(
     id: int, db: Session = Depends(get_db),
     current_user: schemas.CurrentUser = Depends(oauth2.get_current_user)
@@ -85,13 +85,13 @@ def delete_user(
 
     return Response(status_code=status.HTTP_204_NO_CONTENT)
 
-@router.put("/{id}", status_code=status.HTTP_201_CREATED ,response_model=schemas.UserOut)
+@router.put("/{id}", status_code=status.HTTP_201_CREATED ,response_model=schemas.Auther)
 def update_user(
-    id: int, user: schemas.UserCreate, 
+    id: int, user: schemas.UserCreate,
     db: Session = Depends(get_db),
     current_user: schemas.CurrentUser = Depends(oauth2.get_current_user)
     ):
-    
+
     if current_user.id!= id and current_user.usertype!= "admin":
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,

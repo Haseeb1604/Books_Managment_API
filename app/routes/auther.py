@@ -48,3 +48,49 @@ def read_auther(id:int, db: Session = Depends(get_db)):
             detail=f"Auther with ID {id} does not exist"
         )
     return auther
+
+@router.delete("/{id}")
+def delete_auther(
+    id: int, db: Session = Depends(get_db),
+    current_user: schemas.CurrentUser = Depends(oauth2.get_current_user)
+    ):
+    if current_user.usertype != 'admin':
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="You are not authorized to delete this auther"
+        )
+
+    auther = db.query(models.Auther).filter(models.Auther.id == id)
+    if auther.first() is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Auther with ID {id} does not exist"
+        )
+    auther.delete(synchronize_session=False)
+    db.commit()
+
+    return Response(status_code=status.HTTP_204_NO_CONTENT)
+
+@router.put('/{id}', status_code=status.HTTP_201_CREATED ,response_model=schemas.UserOut)
+def update_auther(
+    id: int, auther: schemas._Auther,
+    db: Session = Depends(get_db),
+    current_user: schemas.CurrentUser = Depends(oauth2.get_current_user)
+    ):
+    if current_user.usertype != 'admin':
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="You are not authorized to delete this auther"
+        )
+
+    auther_query = db.query(models.Auther).filter(models.Auther.id == id)
+    if auther_query.first() is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Auther with ID {id} does not exist"
+        )
+    
+    auther_query.update(auther.dict(), synchronize_session=False)
+    db.commit()
+
+    return auther_query.first()
