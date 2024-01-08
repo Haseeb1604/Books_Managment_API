@@ -66,21 +66,62 @@ import pytest
 #     res = authorized_client_normal.get("/users/2")
 #     assert res.status_code == 403
 
-def test_get_user_not_exist(authorized_client, test_user_admin, test_user):
-    res = authorized_client.get("/users/999")
-    assert res.status_code == 404
+# def test_get_user_not_exist(authorized_client, test_user_admin, test_user):
+#     res = authorized_client.get("/users/999")
+#     assert res.status_code == 404
 
-
-# def test_delete_users(client, test_users):
-#     res = client.delete(f"/users/{test_users[0].id}")
+# def test_delete_user_by_admin(authorized_client, test_user_admin, test_user):
+#     res = authorized_client.delete(f"/users/{test_user['id']}")
 #     assert res.status_code == 204
 
-# def test_update_users(client, test_users):
-#     data = {
-#         "name": "abc1234",
-#         "email": "abc1234@example.com",
-#         "password": "abc123",
-#         "userType": "admin"
-#     }
-#     res = client.put(f"/users/{test_users[0].id}", json=data)
-#     assert res.status_code == 201
+# def test_delete_user_by_normal_user(authorized_client_normal, test_user_admin, test_user):
+#     res = authorized_client_normal.delete(f"/users/{test_user_admin['id']}")
+#     assert res.status_code == 403
+
+# def test_delete_user_by_unauthorized(client, test_user_admin, test_user):
+#     res = client.delete(f"/users/{test_user_admin['id']}")
+#     assert res.status_code == 401
+
+# def test_delete_user_not_exist(authorized_client, test_user_admin, test_user):
+#     res = authorized_client.delete("/users/999")
+#     assert res.status_code == 404
+
+def test_update_user_by_admin(authorized_client, test_user, test_user_admin):
+    data = {
+        "name": "abc1234",
+        "email": "abc1234@example.com",
+        "password": "abc123",
+        "userType": "normal"
+    }
+    res = authorized_client.put(f"/users/{test_user['id']}", json=data)
+    assert res.status_code == 201
+
+def test_update_other_user_by_normal_user(authorized_client_normal, test_user, test_user_admin):
+    data = {
+        "name": "abc1234",
+        "email": "abc1234@example.com",
+        "password": "abc123",
+        "userType": "normal"
+    }
+    res = authorized_client_normal.put(f"/users/{test_user_admin['id']}", json=data)
+    assert res.status_code == 403
+
+def test_update_other_user_by_unauthorized(client, test_user, test_user_admin):
+    data = {
+        "name": "abc1234",
+        "email": "abc1234@example.com",
+        "password": "abc123",
+        "userType": "normal"
+    }
+    res = client.put(f"/users/{test_user_admin['id']}", json=data)
+    assert res.status_code == 401
+
+def test_update_non_existing_user(authorized_client, test_user, test_user_admin):
+    data = {
+        "name": "abc1234",
+        "email": "abc1234@example.com",
+        "password": "abc123",
+        "userType": "normal"
+    }
+    res = authorized_client.put(f"/users/9999", json=data)
+    assert res.status_code == 404

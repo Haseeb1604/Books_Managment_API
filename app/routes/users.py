@@ -103,7 +103,7 @@ def update_user(
     if user_query.first() is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"User with ID {user.id} does not exist"
+            detail=f"User with ID {id} does not exist"
         )
     
     user_query.update(user.dict(), synchronize_session=False)
