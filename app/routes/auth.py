@@ -22,7 +22,7 @@ def login(
     
     if not utils.verify(user_credentials.password, user.password):
         raise HTTPException(
-            status_code = status.HTTP_404_NOT_FOUND,
+            status_code = status.HTTP_401_UNAUTHORIZED,
             detail = "Invalid Credentials"
         )
 
