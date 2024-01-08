@@ -43,7 +43,7 @@ def test_get_publisher(client_fixture, publisher_id, expected_status_code, reque
     client = request.getfixturevalue(client_fixture)
     
     if publisher_id == "test_publisher_id":
-        publisher_id = test_publisher[0].id
+        publisher_id = 1
     
     res = client.get(f"/publisher/{publisher_id}")
     assert res.status_code == expected_status_code
@@ -59,7 +59,7 @@ def test_delete_publisher(client_fixture, publisher_id, expected_status_code, re
     client = request.getfixturevalue(client_fixture)
     
     if publisher_id == "test_publisher_id":
-        publisher_id = test_publisher[0].id
+        publisher_id = 1
 
     res = client.delete(f"/publisher/{publisher_id}")
     assert res.status_code == expected_status_code
@@ -75,7 +75,7 @@ def test_update_publisher(client_fixture, publisher_id, publisher_data, expected
     client = request.getfixturevalue(client_fixture)
     
     if publisher_id == "test_publisher_id":
-        publisher_id = test_publisher[0].id
+        publisher_id = 1
 
     res = client.put(f"/publisher/{publisher_id}", json=publisher_data)
     assert res.status_code == expected_status_code

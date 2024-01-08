@@ -99,6 +99,7 @@ def add_model_to_db(session, Model, data):
     session.add_all(data_list)
     session.commit()
     data_list = session.query(Model).all()
+    print(data_list)
     return data_list
 
 @pytest.fixture
@@ -110,7 +111,6 @@ def test_authers(session):
 def test_publisher(session):
     data = [{ "name": "name 1"},{"name": "name 2"},{"name": "name 3"}]
     return add_model_to_db(session, models.Publisher, data)
-    
 
 @pytest.fixture
 def test_books(session, test_user_admin, test_user, test_authers, test_publisher):
