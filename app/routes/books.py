@@ -68,8 +68,7 @@ def delete_book(
             status_code = status.HTTP_404_NOT_FOUND,
             detail = f"Book with ID {id} not found"
         )
-
-    if (book.first().owner_id != current_user.id) and (current_user.usertype == "normal"):
+    if (book.first().owner_id != current_user.id) and (current_user.usertype != "admin"):
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail= f"Not autherized to perfrom requested operation"
@@ -84,7 +83,7 @@ def delete_book(
 def update_book(
     id: int, book: schemas.Book,
     db: Session = Depends(get_db),
-    current_user: int = Depends(oauth2.get_current_user)
+    current_user: schemas.CurrentUser = Depends(oauth2.get_current_user)
     ):
     
     book_query = db.query(models.Books).filter(models.Books.id == id)
@@ -94,8 +93,8 @@ def update_book(
             status_code = status.HTTP_404_NOT_FOUND,
             detail = f"Book with ID {id} not found"
         )
-
-    if (book_query.first().owner_id != current_user):
+    
+    if (book_query.first().owner_id != current_user.id):
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail= f"Not autherized to perfrom requested operation"
