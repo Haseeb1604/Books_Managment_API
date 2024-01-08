@@ -56,7 +56,7 @@ def read_user(
     if user is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"User with ID {user.id} does not exist"
+            detail=f"User with ID {id} does not exist"
         )
     if current_user.id != user.id and current_user.usertype != "admin":
         raise HTTPException(
