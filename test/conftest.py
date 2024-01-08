@@ -77,6 +77,18 @@ def token(test_user_admin):
     return oauth2.create_access_token({"user_id": test_user_admin["id"]})
 
 @pytest.fixture
+def token_normal(test_user):
+    return oauth2.create_access_token({"user_id": test_user["id"]})
+
+@pytest.fixture
+def authorized_client_normal(client, token_normal):
+    client.headers = {
+        **client.headers,
+        "Authorization": f"Bearer {token_normal}"
+    }
+    return client
+
+@pytest.fixture
 def authorized_client(client, token):
     client.headers = {
         **client.headers,

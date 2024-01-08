@@ -79,7 +79,7 @@ def delete_user(
     if user.first() is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"User with ID {user.id} does not exist"
+            detail=f"User with ID {id} does not exist"
         )
     user.delete(synchronize_session=False)
     db.commit()
