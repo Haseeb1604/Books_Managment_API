@@ -11,6 +11,8 @@ from app.Database import get_db
 from app.Database import Base
 from app import models
 
+from app.routes import oauth2
+
 SQLALCHEMY_DATABASE_URL = f"postgresql://{settings.DATABASE_USERNAME}:{settings.DATABASE_PASSWORD}@{settings.DATABASE_HOSTNAME}:{settings.DATABASE_PORT}/{settings.DATABASE_NAME}_test"
 
 engine = create_engine(
@@ -40,6 +42,49 @@ def client(session):
     app.dependency_overrides[get_db] = override_get_db
     yield TestClient(app)
 
+@pytest.fixture
+def test_user(client):
+    user_data = {
+        "name": "abc2",
+        "email": "abc2@example.com",
+        "password": "abc123",
+        "usertype": "normal",
+    }
+
+    res = client.post("/users/", json=user_data)
+    new_user = res.json()
+    new_user["password"] = user_data["password"]
+    assert res.status_code == 201
+    return new_user
+
+@pytest.fixture
+def test_user_admin(client):
+    user_data = {
+        "name": "abc",
+        "email": "abc@example.com",
+        "password": "abc123",
+        "usertype": "admin",
+    }
+
+    res = client.post("/users/", json=user_data)
+    new_user = res.json()
+    new_user["password"] = user_data["password"]
+    assert res.status_code == 201
+    return new_user
+
+@pytest.fixture
+def token(test_user_admin):
+    return oauth2.create_access_token({"user_id": test_user_admin["id"]})
+
+@pytest.fixture
+def authorized_client(client, token):
+    client.headers = {
+        **client.headers,
+        "Authorization": f"Bearer {token}"
+    }
+
+    return client
+
 def add_model_to_db(session, Model, data):
     def create_model(auther):
         return Model(**auther)
@@ -60,50 +105,28 @@ def test_authers(session):
 def test_publisher(session):
     data = [{ "name": "name 1"},{"name": "name 2"},{"name": "name 3"}]
     return add_model_to_db(session, models.Publisher, data)
-
-@pytest.fixture
-def test_users(session):
-    data = [{
-        "name": "abc",
-        "email": "abc@example.com",
-        "password": "abc123",
-        "usertype": "admin",
-    },{
-        "name": "abc123",
-        "email": "abc123@example.com",
-        "password": "1234",
-        "usertype": "normal",
-    },{
-        "name": "user",
-        "email": "user123@example.com",
-        "password": "1234",
-        "usertype": "normal",
-    }
-    ]
-
-    return add_model_to_db(session, models.Users, data)
     
 
 @pytest.fixture
-def test_books(session, test_users):
+def test_books(session, test_user_admin, test_user, test_authers, test_publisher):
     data = [{
         "title": "first title",
-        "price": 12,
-        "auther_id": 1,
-        "publisher_id": 2,
-        "owner_id": test_users[0].id
+        "price": 20,
+        "auther_id": test_authers[0].id,
+        "publisher_id": test_publisher[0].id,
+        "owner_id": test_user_admin.id
     },{
         "title": "Second title",
         "price": 34,
-        "auther_id": 1,
-        "publisher_id": 1,
-        "owner_id": test_users[2].id
+        "auther_id": test_authers[2].id,
+        "publisher_id": test_publisher[1].id,
+        "owner_id": test_user.id
     },{
         "title": "third title",
         "price": 23,
-        "auther_id": 2,
-        "publisher_id": 2,
-        "owner_id": test_users[1].id
+        "auther_id": test_authers[1].id,
+        "publisher_id": test_publisher[2].id,
+        "owner_id": test_user.id
     }
     ]
 
