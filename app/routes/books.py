@@ -41,10 +41,10 @@ def get_single_book(
 def create_item(
     book: schemas.Book, 
     db: Session = Depends(get_db),
-    current_user: int = Depends(oauth2.get_current_user)
+    current_user: schemas.CurrentUser = Depends(oauth2.get_current_user)
     ):
     new_book = models.Books(
-        owner_id = current_user,
+        owner_id = current_user.id,
         **book.dict()
         )
     

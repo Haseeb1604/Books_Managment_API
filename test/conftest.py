@@ -87,7 +87,6 @@ def authorized_client(client, token):
         **client.headers,
         "Authorization": f"Bearer {token}"
     }
-
     return client
 
 def add_model_to_db(session, Model, data):
@@ -117,21 +116,21 @@ def test_books(session, test_user_admin, test_user, test_authers, test_publisher
     data = [{
         "title": "first title",
         "price": 20,
-        "auther_id": test_authers[0].id,
-        "publisher_id": test_publisher[0].id,
-        "owner_id": test_user_admin.id
+        "auther_id": 1,
+        "publisher_id": 1,
+        "owner_id": test_user_admin["id"]
     },{
         "title": "Second title",
         "price": 34,
-        "auther_id": test_authers[2].id,
-        "publisher_id": test_publisher[1].id,
-        "owner_id": test_user.id
+        "auther_id": 2,
+        "publisher_id": 1,
+        "owner_id": test_user["id"]
     },{
         "title": "third title",
         "price": 23,
-        "auther_id": test_authers[1].id,
-        "publisher_id": test_publisher[2].id,
-        "owner_id": test_user.id
+        "auther_id": 3,
+        "publisher_id": 3,
+        "owner_id": test_user["id"]
     }
     ]
 
