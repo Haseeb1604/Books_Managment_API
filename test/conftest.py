@@ -42,13 +42,12 @@ def client(session):
     app.dependency_overrides[get_db] = override_get_db
     yield TestClient(app)
 
-@pytest.fixture
-def test_user(client):
+def create_user(client, name, email, password, usertype):
     user_data = {
-        "name": "abc2",
-        "email": "abc2@example.com",
-        "password": "abc123",
-        "usertype": "normal",
+        "name": name,
+        "email": email,
+        "password": password,
+        "usertype": usertype,
     }
 
     res = client.post("/users/", json=user_data)
@@ -56,21 +55,15 @@ def test_user(client):
     new_user["password"] = user_data["password"]
     assert res.status_code == 201
     return new_user
+
+@pytest.fixture
+def test_user(client):
+    return create_user(client, "abc2", "abc2@example.com", "abc123", "normal")
 
 @pytest.fixture
 def test_user_admin(client):
-    user_data = {
-        "name": "abc",
-        "email": "abc@example.com",
-        "password": "abc123",
-        "usertype": "admin",
-    }
+    return create_user(client, "abc", "abc@example.com", "abc123", "admin")
 
-    res = client.post("/users/", json=user_data)
-    new_user = res.json()
-    new_user["password"] = user_data["password"]
-    assert res.status_code == 201
-    return new_user
 
 @pytest.fixture
 def token(test_user_admin):
